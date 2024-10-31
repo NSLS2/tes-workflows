@@ -6,7 +6,6 @@ import pprint
 
 from utils import get_proposal_dir
 
-@task(log_prints=True)
 def export_E_step(run):
     logger = get_run_logger()
     scan_index = run.start["scan_index"]
