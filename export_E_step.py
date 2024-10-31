@@ -4,7 +4,7 @@ import datetime
 import os
 import pprint
 
-from .utils import get_proposal_dir
+from utils import get_proposal_dir
 
 @task(log_prints=True)
 def export_E_step(run):

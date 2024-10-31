@@ -1,7 +1,5 @@
-from prefect import task
 from pathlib import Path
 
-@task
 def get_proposal_dir(run):
     if "Routine Setup and Testing For Beamline 8‐BM".lower() in run.start["proposal"]["title"].lower():
         proposal_dir = Path(f"/nsls2/data/tes/proposals/commissioning/{run.start['data_session']}")
