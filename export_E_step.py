@@ -10,7 +10,7 @@ def export_E_step(run):
     logger = get_run_logger()
     scan_index = run.start["scan_index"]
     
-    E =  run.start['E_points']
+    E =  run.start['user_input']['E_points']
 
     I0 = run["primary"]["data"]["I0"].read()
     I_TEY = run["primary"]["data"]["fbratio"].read()
