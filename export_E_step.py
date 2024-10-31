@@ -1,6 +1,7 @@
 from prefect import flow, task, get_run_logger
 import pandas as pd
 import datetime
+import os
 
 @task(log_prints=True)
 def export_E_step(run):
