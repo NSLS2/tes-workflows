@@ -32,7 +32,7 @@ def export_E_step(run):
                 "If_CH1_roi4": If_1_roi4,
             }
         )
-    elif 'xsmart' in run.start['detectors']:
+    elif 'xssmart' in run.start['detectors']:
         If_1_roi1 = run["primary"]["data"]["xssmart_channel01_mcaroi01_total_rbv"].read()
         If_2_roi1 = run["primary"]["data"]["xssmart_channel02_mcaroi01_total_rbv"].read()
         If_3_roi1 = run["primary"]["data"]["xssmart_channel03_mcaroi01_total_rbv"].read()
