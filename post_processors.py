@@ -2,8 +2,6 @@ from prefect import flow, task, get_run_logger
 from tiled.client import from_profile
 
 from export_E_step import export_E_step
-from export_Esmart_step import export_Esmart_step
-
 
 BEAMLINE_ACRONYM = "tes"
 
@@ -11,7 +9,7 @@ tiled_client = from_profile("nsls2")[BEAMLINE_ACRONYM]["raw"]
 
 processor_map = {
     'export_E_step': export_E_step,
-    'export_Esmart_step': export_Esmart_step
+    'export_Esmart_step': export_E_step
 }
 
 @task
