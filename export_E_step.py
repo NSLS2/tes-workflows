@@ -1,4 +1,5 @@
 from prefect import flow, task, get_run_logger
+import pandas as pd
 
 @flow(log_prints=True)
 def export_E_step(run):
