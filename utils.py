@@ -1,5 +1,4 @@
 from pathlib import Path
-import datetime as dt
 
 def get_proposal_dir(run):
     if "Routine Setup and Testing For Beamline 8‐BM".lower() in run.start["proposal"]["title"].lower():
@@ -7,4 +6,4 @@ def get_proposal_dir(run):
     else:
         proposal_dir = Path(f"/nsls2/data/tes/proposals/{run.start['cycle']}/{run.start['data_session']}")  # noqa: E501
     
-    return proposal_dir / Path(f"/Data/{run.start['operator']}/{dt.date().isoformat()}")
+    return proposal_dir

@@ -69,7 +69,7 @@ def export_E_step(run):
         "derived_input": start["derived_input"],
     }
 
-    working_dir = get_proposal_dir(run) / "E_step"
+    working_dir = get_proposal_dir(run) / f"Data/{run.start['operator']}/{dt.date().isoformat()}/E_step"
     filename = f"{start['scan_title']}-{start['scan_id']}-{start['operator']}-{dt.time().strftime('%H-%M-%S')}-{scan_index}.cvs"
     filepath = working_dir / filename
 
