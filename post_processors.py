@@ -3,9 +3,9 @@ from tiled.client import from_profile
 
 from export_E_step import export_E_step
 
-CATALOG_NAME = "tes"
+BEAMLINE_ACRONYM = "tes"
 
-tiled_client = from_profile("nsls2")[CATALOG_NAME]["raw"]
+tiled_client = from_profile("nsls2")[BEAMLINE_ACRONYM]["raw"]
 
 processor_map = {
     'export_E_step': export_E_step,

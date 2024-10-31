@@ -2,12 +2,13 @@ from prefect import task, flow, get_run_logger
 import time as ttime
 from tiled.client import from_profile
 
+BEAMLINE_ACRONYM = "tes"
 
 @task(retries=2, retry_delay_seconds=10)
-def read_all_streams(uid, beamline_acronym):
+def read_all_streams(uid):
     logger = get_run_logger()
     tiled_client = from_profile("nsls2")
-    run = tiled_client[beamline_acronym]["raw"][uid]
+    run = tiled_client[BEAMLINE_ACRONYM]["raw"][uid]
     logger.info(f"Validating uid {run.start['uid']}")
     start_time = ttime.monotonic()
     for stream in run:
@@ -23,4 +24,4 @@ def read_all_streams(uid, beamline_acronym):
 
 @flow
 def data_validation(uid):
-    read_all_streams(uid, beamline_acronym="tes")
+    read_all_streams(uid)
