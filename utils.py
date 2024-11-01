@@ -52,4 +52,5 @@ def get_detector(run):
 def get_rois(run):
     detector = get_detector(run)
     element = run.start["user_input"]["element"]
-    return element_to_roi[detector][element]
+    edge = run.start["user_input"]["edge"]
+    return element_to_roi[detector][f"{element}_{edge}".lower()]
