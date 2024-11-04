@@ -28,7 +28,7 @@ def export_E_step(run):
 
         df = pd.DataFrame(
             {
-                "#Energy": E[:len(I0)],
+                "#Energy": E,
                 "I0": I0,
                 "I_TEY": I_TEY,
                 "If_CH1_roi1": If_1_roi1,
