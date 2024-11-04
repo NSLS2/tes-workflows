@@ -66,6 +66,9 @@ def export_E_step(run):
     start = run.start
     dt = datetime.datetime.fromtimestamp(start["time"])
 
+    user_input = start['user_input']
+    del user_input['E_points']
+
     file_head = {
         "beamline_id": "TES/8-BM of NSLS-II",
         "operator": start["operator"],
@@ -74,7 +77,7 @@ def export_E_step(run):
         "scan_title": start["scan_title"],
         "time": f"{dt.date().isoformat()} {dt.time().isoformat()}",
         "uid": start["uid"],
-        "user_input": start["user_input"],
+        "user_input": user_input,
         "derived_input": start["derived_input"],
     }
 
