@@ -15,6 +15,7 @@ def export_E_step(run):
     E = run.start["user_input"]["E_points"]
 
     I0 = run["primary"]["data"]["I0"].read()
+    It = run["primary"]["data"]["It"].read()
     I_TEY = run["primary"]["data"]["fbratio"].read()
 
     # This will raise an exception if detector is not xs or xssmart.
@@ -55,6 +56,7 @@ def export_E_step(run):
             {
                 "#Energy": E,
                 "I0": I0,
+                "It": It,
                 "I_TEY": I_TEY,
                 "If_CH1_roi1": If_1_roi1,
                 "If_CH2_roi1": If_2_roi1,
