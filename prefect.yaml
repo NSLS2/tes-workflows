@@ -31,4 +31,5 @@ deployments:
           - /nsls2/software/etc/tiled:/nsls2/software/etc/tiled
         container_create_kwargs:
           userns_mode: "keep-id:uid=402954,gid=402954"  # workflow-tes:workflow-tes
+        auto_remove: true
       name: tes-work-pool-docker
