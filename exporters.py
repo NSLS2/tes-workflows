@@ -52,6 +52,9 @@ def export_E_step(run):
             "xssmart_channel04_mcaroi01_total_rbv"
         ].read()
 
+        logger.info(f"E shape: {E.shape}")
+        logger.info(f"I0 shape: {I0.shape}")
+
         df = pd.DataFrame(
             {
                 "#Energy": E,
