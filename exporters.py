@@ -52,7 +52,7 @@ def export_E_step(run):
             "xssmart_channel04_mcaroi01_total_rbv"
         ].read()
 
-        logger.info(f"E shape: {E.shape}")
+        logger.info(f"E len: {len(E)}")
         logger.info(f"I0 shape: {I0.shape}")
         logger.info(f"It shape: {It.shape}")
         logger.info(f"I_TEY shape: {I_TEY.shape}")
