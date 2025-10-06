@@ -1,11 +1,9 @@
 from prefect import flow, task, get_run_logger
-from tiled.client import from_profile
+from tiled_utils import get_tiled_client
 
 from exporters import export_E_step, export_E_fly
 
-BEAMLINE_ACRONYM = "tes"
-
-tiled_client = from_profile("nsls2")[BEAMLINE_ACRONYM]["raw"]
+tiled_client = get_tiled_client()["raw"]
 
 processor_map = {
     'export_E_step': export_E_step,
