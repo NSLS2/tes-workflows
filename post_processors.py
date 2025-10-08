@@ -6,7 +6,7 @@ from exporters import export_E_step, export_E_fly
 
 BEAMLINE_ACRONYM = "tes"
 
-api_key = Secret.load("tiled-tes-key").get()
+api_key = Secret.load("tiled-tes-key", _sync=True).get()
 tiled_client = from_profile("nsls2", api_key=api_key)[BEAMLINE_ACRONYM]["raw"]
 
 processor_map = {

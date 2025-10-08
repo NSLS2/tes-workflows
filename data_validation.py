@@ -9,7 +9,7 @@ BEAMLINE_ACRONYM = "tes"
 @task(retries=2, retry_delay_seconds=10)
 def read_all_streams(uid):
     logger = get_run_logger()
-    api_key = Secret.load("tiled-tes-api.key").get()
+    api_key = Secret.load("tiled-tes-api.key", _sync=True).get()
     tiled_client = from_profile("nsls2", api_key=api_key)
     run = tiled_client[BEAMLINE_ACRONYM]["raw"][uid]
     logger.info(f"Validating uid {run.start['uid']}")
