@@ -87,7 +87,7 @@ def export_E_step(run):
         get_proposal_dir(run)
         / f"Data/{run.start['operator']}/{dt.date().isoformat()}/E_step"
     )
-    filename = f"{start['scan_title']}-{start['scan_id']}-{start['operator']}-{dt.time().strftime('%H-%M-%S')}-{scan_index}.cvs"
+    filename = f"{start['scan_title']}-{start['scan_id']}-{start['operator']}-{dt.time().strftime('%H-%M-%S')}-{scan_index}.csv"
     filepath = working_dir / filename
 
     os.makedirs(working_dir, exist_ok=True)
