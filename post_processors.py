@@ -1,11 +1,13 @@
 from prefect import flow, task, get_run_logger
+from prefect.blocks.system import Secret
 from tiled.client import from_profile
 
 from exporters import export_E_step, export_E_fly
 
 BEAMLINE_ACRONYM = "tes"
 
-tiled_client = from_profile("nsls2")[BEAMLINE_ACRONYM]["raw"]
+api_key = Secret.load("tiled-tes-api-key", _sync=True).get()
+tiled_client = from_profile("nsls2", api_key=api_key)[BEAMLINE_ACRONYM]["raw"]
 
 processor_map = {
     'export_E_step': export_E_step,
