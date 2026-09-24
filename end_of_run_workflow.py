@@ -10,8 +10,8 @@ def log_completion():
 
 
 @flow
-def end_of_run_workflow(stop_doc):
+def end_of_run_workflow(stop_doc, api_key=None):
     uid = stop_doc["run_start"]
-    data_validation(uid)
-    post_processors(uid)
+    data_validation(uid, api_key=api_key)
+    post_processors(uid, api_key=api_key)
     log_completion()
