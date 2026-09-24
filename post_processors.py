@@ -12,18 +12,18 @@ processor_map = {
 }
 
 @task
-def dispatcher(run_uid, api_key=None):
+def dispatcher(run_uid, api_key=None, dry_run=False):
     logger = get_run_logger()
     run = get_run(run_uid, api_key=api_key)
     for processor in run.start["prefect_post_processors"]:
         logger.info(f"Start post-processor '{processor}'...")
-        processor_map[processor](run)
+        processor_map[processor](run, dry_run=dry_run)
         logger.info(f"Finish post-processor '{processor}'")
 
 
 @flow(log_prints=True)
-def post_processors(run_uid, api_key=None):
+def post_processors(run_uid, api_key=None, dry_run=False):
     logger = get_run_logger()
     logger.info("Start post_processors...")
-    dispatcher(run_uid, api_key=api_key)
+    dispatcher(run_uid, api_key=api_key, dry_run=dry_run)
     logger.info("Finish post_processors.")

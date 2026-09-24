@@ -74,15 +74,15 @@ def slack(func):
 
 
 @task
-def log_completion():
+def log_completion(dry_run=False):
     logger = get_run_logger()
-    logger.info("Complete")
+    logger.info(f"Complete! dry_run: {dry_run}")
 
 
 @flow
 @slack
-def end_of_run_workflow(stop_doc, api_key=None):
+def end_of_run_workflow(stop_doc, api_key=None, dry_run=False):
     uid = stop_doc["run_start"]
     data_validation(uid, api_key=api_key)
-    post_processors(uid, api_key=api_key)
-    log_completion()
+    post_processors(uid, api_key=api_key, dry_run=dry_run)
+    log_completion(dry_run=dry_run)

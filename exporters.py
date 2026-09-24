@@ -1,4 +1,4 @@
-from prefect import flow, task, get_run_logger
+from prefect import get_run_logger
 import pandas as pd
 import datetime
 import os
@@ -8,7 +8,7 @@ import numpy as np
 from utils import get_proposal_dir, get_detector, get_rois
 
 
-def export_E_step(run):
+def export_E_step(run, dry_run=False):
     logger = get_run_logger()
     scan_index = run.start["scan_index"]
 
@@ -99,19 +99,22 @@ def export_E_step(run):
     filename = f"{start['scan_title']}-{start['scan_id']}-{start['operator']}-{dt.time().strftime('%H-%M-%S')}-{scan_index}.csv"
     filepath = working_dir / filename
 
-    os.makedirs(working_dir, exist_ok=True)
+    if dry_run:
+        logger.info(f"Dry run: would create {working_dir} and write to {filepath}")
+    else:
+        os.makedirs(working_dir, exist_ok=True)
 
-    with open(filepath, "wt") as output_file:
-        output_file.write(pprint.pformat(file_head, width=100))
-        output_file.write("\n")
-        output_file.write("\n")
-        output_file.write("\n")
+        with open(filepath, "wt") as output_file:
+            output_file.write(pprint.pformat(file_head, width=100))
+            output_file.write("\n")
+            output_file.write("\n")
+            output_file.write("\n")
 
-    df.to_csv(filepath, header=True, index=False, mode="a")
-    logger.info(f"Data exported to {filepath}")
+        df.to_csv(filepath, header=True, index=False, mode="a")
+        logger.info(f"Data exported to {filepath}")
 
 
-def export_E_fly(run):
+def export_E_fly(run, dry_run=False):
     logger = get_run_logger()
     start = run.start
 
@@ -187,15 +190,18 @@ def export_E_fly(run):
         filename = f"{start['scan_title']}-{start['scan_id']}-{start['operator']}-{dt.time().strftime('%H-%M-%S')}-{ii}.dat"
         filepath = working_dir / filename
 
-        os.makedirs(working_dir, exist_ok=True)
+        if dry_run:
+            logger.info(f"Dry run: would create {working_dir} and write to {filepath}")
+        else:
+            os.makedirs(working_dir, exist_ok=True)
 
-        with open(filepath, "wt") as output_file:
-            output_file.write(pprint.pformat(file_head, width=100))
-            output_file.write("\n")
-            output_file.write("\n")
-            output_file.write("\n")
+            with open(filepath, "wt") as output_file:
+                output_file.write(pprint.pformat(file_head, width=100))
+                output_file.write("\n")
+                output_file.write("\n")
+                output_file.write("\n")
 
-        df.to_csv(filepath, header=True, index=False, mode="a")
-        logger.info(f"Data exported to {filepath}")
+            df.to_csv(filepath, header=True, index=False, mode="a")
+            logger.info(f"Data exported to {filepath}")
 
     logger.info("Export complete.")
