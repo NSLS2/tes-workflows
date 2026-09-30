@@ -14,7 +14,6 @@ def get_api_key_from_env():
     return api_key
 
 
-# Mongo database-backed - remove if this does not exist on the beamline
 @task(retries=2, retry_delay_seconds=10)
 def get_run(uid, api_key=None):
     if not api_key:
@@ -24,23 +23,11 @@ def get_run(uid, api_key=None):
     return run
 
 
-# SQL database-backed - remove if this does not exist on the beamline
-@task(retries=2, retry_delay_seconds=10)
-def get_run_migration(uid, api_key=None):
-    if not api_key:
-        api_key = get_api_key_from_env()
-    cl = from_uri("https://tiled.nsls2.bnl.gov", api_key=api_key)
-    run = cl[f"{BEAMLINE_OR_ENDSTATION}/migration"][uid]
-    return run
-
-
-# only call if Mongo - remove if SQL
 @task(retries=2, retry_delay_seconds=10)
 def read_stream(run, stream):
     return run[stream].read()
 
 
-# only call if Mongo - remove if SQL
 @flow
 def data_validation(uid, api_key=None):
     logger = get_run_logger()
