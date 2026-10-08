@@ -1,17 +1,87 @@
+import traceback
+
 from prefect import task, flow, get_run_logger
+from prefect.blocks.notifications import SlackWebhook
+from prefect.context import FlowRunContext
+from prefect.settings import PREFECT_UI_URL
+from data_validation import get_run
+from dotenv import load_dotenv
+
 from data_validation import data_validation
 from post_processors import post_processors
 
+CATALOG_NAME = "tes"
+
+
+def slack(func):
+    """
+    Send a message to mon-prefect and mon-prefect-spec slack channels if the flow-run failed.
+    Send a message to mon-prefect-tes slack channel with the flow-run status.
+    Send a message to mon-bluesky slack channel if the bluesky-run failed.
+
+    NOTE: the name of this inner function is the same as the real end_of_workflow() function because
+    when the decorator is used, Prefect sees the name of this inner function as the name of
+    the flow. To keep the naming of workflows consistent, the name of this inner function had to match the expected name.
+    """
+
+    def end_of_run_workflow(stop_doc, api_key=None, dry_run=False):
+        flow_run_name = FlowRunContext.get().flow_run.dict().get("name")
+
+        # Load slack credentials that are saved in Prefect.
+        mon_prefect = SlackWebhook.load("mon-prefect")
+        mon_bluesky = SlackWebhook.load("mon-bluesky")
+        mon_prefect_tes = SlackWebhook.load("mon-prefect-tes")
+        mon_prefect_spec = SlackWebhook.load("mon-prefect-spec")
+
+        # Get the uid.
+        uid = stop_doc["run_start"]
+
+        # Get the scan_id.
+        run = get_run(uid, api_key=api_key)
+        scan_id = run.start["scan_id"]
+
+        # Send a message to mon-bluesky if bluesky-run failed.
+        if stop_doc.get("exit_status") == "fail":
+            mon_bluesky.notify(
+                f":bangbang: {CATALOG_NAME} bluesky-run failed. (*{flow_run_name}*)\n ```run_start: {uid}\nscan_id: {scan_id}``` ```reason: {stop_doc.get('reason', 'none')}```"
+            )
+
+        try:
+            result = func(stop_doc, api_key=api_key, dry_run=dry_run)
+
+            # Send a message to mon-prefect-tes if flow-run is successful.
+            message = f":white_check_mark: {CATALOG_NAME} flow-run successful. (*{flow_run_name}*)\n ```run_start: {uid}\nscan_id: {scan_id}```"
+            mon_prefect_tes.notify(message)
+            return result
+        except Exception as e:
+            tb = traceback.format_exception_only(e)
+
+            # Send a message to mon-prefect-tes, mon-prefect if flow-run failed.
+            message = f":bangbang: {CATALOG_NAME} flow-run failed. (*{flow_run_name}*)\n ```run_start: {uid}\nscan_id: {scan_id}``` ```{tb[-1]}```"
+            mon_prefect.notify(message)
+            mon_prefect_tes.notify(message)
+            flow_run = FlowRunContext.get().flow_run
+            # Add link to flow-run for the message to mon-prefect-program.
+            program_message = (
+                f":bangbang: {CATALOG_NAME} flow-run failed. <{PREFECT_UI_URL.value()}/flow-runs/"
+                + f"flow-run/{flow_run.id}|the flow run link> (*{flow_run_name}*)\n ```run_start: {uid}\nscan_id: {scan_id}``` ```{tb[-1]}```"
+            )
+            mon_prefect_spec.notify(program_message)
+            raise
+
+    return end_of_run_workflow
+
 
 @task
-def log_completion():
+def log_completion(dry_run=False):
     logger = get_run_logger()
-    logger.info("Complete")
+    logger.info(f"Complete! dry_run: {dry_run}")
 
 
 @flow
-def end_of_run_workflow(stop_doc):
+@slack
+def end_of_run_workflow(stop_doc, api_key=None, dry_run=False):
     uid = stop_doc["run_start"]
-    data_validation(uid)
-    post_processors(uid)
-    log_completion()
+    data_validation(uid, api_key=api_key)
+    post_processors(uid, api_key=api_key, dry_run=dry_run)
+    log_completion(dry_run=dry_run)
